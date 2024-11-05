@@ -1,6 +1,6 @@
 import prompts from 'prompts';
 
-export const promptForProjectName = async () => {
+export const promptForProjectName = async (): Promise<string> => {
 	const res = await prompts(
 		{
 			type: 'text',

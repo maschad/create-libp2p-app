@@ -12,7 +12,7 @@ export function configureLogging(params: { isDebugEnabled: boolean; isLoggingEna
 
 export function log(...data: unknown[]) {
 	if (loggingConfig.isLoggingEnabled) {
-=		console.log(data.join(' '));
+		console.log(data.join(' '));
 	}
 }
 

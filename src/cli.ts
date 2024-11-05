@@ -6,8 +6,10 @@ import { cp, mkdir, rename } from 'fs/promises';
 import ora from 'ora';
 import { join } from 'path';
 
-import type { Template, ProgramOptions } from './lib/setupProgram';
 import { error, log } from './utils/logger';
+import { promptForProjectName } from './prompts';
+import { getPackageVersion } from './lib/getPackageVersion';
+import { extractOptions } from './lib/extractOptions';
 
 export { setupProgram } from './lib/setupProgram';
 
@@ -22,123 +24,56 @@ export const runScaffoldCli = async ({
 	args: string[];
 }) => {
 	program.parse(args);
-	const opts = program.opts<ProgramOptions>();
 
-	const templateOfChoice = (opts.template ?? defaultTemplate) as Template;
 
-	if (!doesTemplateExist(templateOfChoice)) {
-		error(`Template '${templateOfChoice}' does not exist.`);
-		log();
-		log('Available templates:');
-		for (const template of templates) {
-			log(`  - ${template}`);
-		}
-		process.exit(1);
-	}
+	let projectPath = program.args[0] ?? (await promptForProjectName());
 
-	let projectPath = program.args[0] ?? (await promptForProjectPath());
-
-	const verboseEnabled = opts.verbose ?? false;
-	const packageManager = getPackageManager(opts);
-
-	if (!process.env.VITEST) {
-		await tryInstallFuelUp(verboseEnabled);
-	}
 
 	while (existsSync(projectPath)) {
 		error(`A folder already exists at ${projectPath}. Please choose a different project name.`);
 
-		// Exit the program if we are testing to prevent hanging
-		if (process.env.VITEST) {
-			throw new FuelError(
-				FuelError.CODES.UNKNOWN,
-				'An error occurred due to the environmental variable `VITEST` was detected.'
-			);
-		}
-
-		projectPath = await promptForProjectPath();
+		projectPath = await promptForProjectName();
 	}
 
 	while (!projectPath) {
 		error('Please specify a project directory.');
 
-		// Exit the program if we are testing to prevent hanging
-		if (process.env.VITEST) {
-			throw new FuelError(
-				FuelError.CODES.UNKNOWN,
-				'An error occurred due to the environmental variable `VITEST` was detected.'
-			);
-		}
-
-		projectPath = await promptForProjectPath();
+		projectPath = await promptForProjectName();
 	}
 
-	const fileCopySpinner = ora({
-		text: 'Copying template files..',
-		color: 'green',
-	}).start();
+	const options = await extractOptions();
 
-	await mkdir(projectPath);
+	// const fileCopySpinner = ora({
+	// 	text: 'Copying template files..',
+	// 	color: 'green',
+	// }).start();
 
-	const templateDir = join(__dirname, '..', 'templates', templateOfChoice);
-	await cp(templateDir, projectPath, {
-		recursive: true,
-		filter: (filename) => !filename.includes('CHANGELOG.md'),
-	});
-	await rename(join(projectPath, 'gitignore'), join(projectPath, '.gitignore'));
+	// await mkdir(projectPath);
 
 
-	const packageJsonPath = join(projectPath, 'package.json');
-	const packageJsonContents = readFileSync(packageJsonPath, 'utf-8');
-	const fuelsVersion = getPackageVersion(args);
-	const newPackageJsonContents = packageJsonContents
-		.replace(`pnpm run prebuild`, packageManager.run('prebuild'))
-		.replace(`"fuels": "${versions.FUELS}"`, `"fuels": "${fuelsVersion}"`);
+	// // Remove typegen files from gitignore
+	// const gitignorePath = join(projectPath, '.gitignore');
+	// const gitignoreContents = readFileSync(gitignorePath, 'utf-8');
+	// const newGitIgnoreContents = gitignoreContents.replace(/^(src\/sway-api\/.+)$/gm, '# $1');
+	// writeFileSync(gitignorePath, newGitIgnoreContents);
 
-	writeFileSync(packageJsonPath, newPackageJsonContents);
+	// fileCopySpinner.succeed('Copied template files!');
 
-	// Rewrite the README.md file
-	const readmePath = join(projectPath, 'README.md');
-	const readmeContents = readFileSync(readmePath, 'utf-8');
-	const newReadmeContents = readmeContents
-		.replace('npm run fuels:dev', packageManager.run('fuels:dev'))
-		.replace('npm run dev', packageManager.run('dev'));
-	writeFileSync(readmePath, newReadmeContents);
-
-	fileCopySpinner.succeed('Copied template files!');
-
-	// Remove typegen files from gitignore
-	const gitignorePath = join(projectPath, '.gitignore');
-	const gitignoreContents = readFileSync(gitignorePath, 'utf-8');
-	const newGitIgnoreContents = gitignoreContents.replace(/^(src\/sway-api\/.+)$/gm, '# $1');
-	writeFileSync(gitignorePath, newGitIgnoreContents);
-
-	if (opts.install) {
-		const installDepsSpinner = ora({
-			text: 'Installing dependencies..',
-			color: 'green',
-		}).start();
-		process.chdir(projectPath);
-		execSync(packageManager.install, { stdio: verboseEnabled ? 'inherit' : 'pipe' });
-		installDepsSpinner.succeed('Installed dependencies!');
-
-		// Generate typegen files
-		execSync(packageManager.run('prebuild'), { stdio: verboseEnabled ? 'inherit' : 'pipe' });
-	}
 
 	log();
 	log();
-	log(chalk.green(`⚡️ Success! Created a libp2p dapp at ${projectPath}`));
+	log(chalk.green(`⚡️ Success! Created a libp2p app at ${projectPath}`));
 	log();
 	log();
 	log('To get started:');
 	log();
 	log(`- cd into the project directory: cd ${projectPath}`);
 	log();
+	log('- Run `npm run start` to start the app');
 	log();
-	log('-> TS SDK docs: https://docs.fuel.network/docs/fuels-ts/');
-	log('-> Sway docs: https://docs.fuel.network/docs/sway/');
-	log('-> If you have any questions, check the Fuel forum: https://forum.fuel.network/');
+	log();
+	log('-> For more info on getting started: https://github.com/libp2p/js-libp2p/blob/main/doc/GETTING_STARTED.md');
+	log('-> For general docs: https://docs.libp2p.io/');
 	log();
 	log();
 };

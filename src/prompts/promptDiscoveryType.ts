@@ -1,12 +1,13 @@
 import prompts from 'prompts';
 
-export const promptDiscoveryType = async () => {
+export const promptDiscoveryType = async (): Promise<prompts.Answers<"discoveryType">> => {
 	const res = await prompts(
 		{
 			type: 'multiselect',
 			name: 'discoveryType',
 			message: 'how would you go about discovering peers?',
-			initial: 'bootstrap',
+			hint: '- Space to select. Return to submit',
+			min: 1,
 			choices: [
 				{ title: 'On my local network', value: 'mdns' },
 				{ title: 'Using the global p2p network', value: 'dht' },
@@ -17,5 +18,5 @@ export const promptDiscoveryType = async () => {
 		{ onCancel: () => process.exit(0) }
 	);
 
-	return res.discoveryType as string;
+	return res.discoveryType;
 };

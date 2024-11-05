@@ -1,12 +1,12 @@
 import prompts from 'prompts';
 
-export const promptEnvironmentType = async () => {
+export const promptEnvironmentType = async (): Promise<prompts.Answers<"environmentType">> => {
 	const res = await prompts(
 		{
-			type: 'multiselect',
+			type: 'select',
 			name: 'environmentType',
 			message: 'how would you describe the environment of your project?',
-			initial: 'node to browser',
+			initial: 1,
 			choices: [
 				{ title: 'Node to Browser', value: 'node-to-browser' },
 				{ title: 'Node to Node', value: 'node-to-node' },
@@ -16,5 +16,5 @@ export const promptEnvironmentType = async () => {
 		{ onCancel: () => process.exit(0) }
 	);
 
-	return res.environmentType as string;
+	return res.environmentType;
 };
