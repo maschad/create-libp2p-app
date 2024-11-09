@@ -10,6 +10,7 @@ import { error, log } from './utils/logger';
 import { promptForProjectName } from './prompts';
 import { getPackageVersion } from './lib/getPackageVersion';
 import { extractOptions } from './lib/extractOptions';
+import { writeConfigToFile } from './utils/configToFile';
 
 export { setupProgram } from './lib/setupProgram';
 
@@ -40,16 +41,22 @@ export const runScaffoldCli = async ({
 
 		projectPath = await promptForProjectName();
 	}
+	const fileCopySpinner = ora({
+		text: 'Creating template files..',
+		color: 'green',
+	}).start();
+
+	await mkdir(projectPath);
 
 	const options = await extractOptions();
 
-	// const fileCopySpinner = ora({
-	// 	text: 'Copying template files..',
-	// 	color: 'green',
-	// }).start();
+	const srcDir = join(projectPath, 'src');
+	await mkdir(srcDir);
 
-	// await mkdir(projectPath);
+	const optionsFilePath = join(srcDir, 'libp2p.ts');
 
+
+	await writeConfigToFile(options, optionsFilePath);
 
 	// // Remove typegen files from gitignore
 	// const gitignorePath = join(projectPath, '.gitignore');
@@ -57,7 +64,7 @@ export const runScaffoldCli = async ({
 	// const newGitIgnoreContents = gitignoreContents.replace(/^(src\/sway-api\/.+)$/gm, '# $1');
 	// writeFileSync(gitignorePath, newGitIgnoreContents);
 
-	// fileCopySpinner.succeed('Copied template files!');
+	fileCopySpinner.succeed('Created template files!');
 
 
 	log();

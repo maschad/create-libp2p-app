@@ -1,6 +1,13 @@
 import prompts from 'prompts';
 
-export const promptDiscoveryType = async (): Promise<prompts.Answers<"discoveryType">> => {
+export enum DiscoveryType {
+	MDNS = 'mdns',
+	DHT = 'dht',
+	BOOTSTRAP = 'bootstrap',
+	DHT_BOOTSTRAP = 'dht-bootstrap',
+}
+
+export const promptDiscoveryType = async (): Promise<DiscoveryType[]> => {
 	const res = await prompts(
 		{
 			type: 'multiselect',
@@ -9,10 +16,10 @@ export const promptDiscoveryType = async (): Promise<prompts.Answers<"discoveryT
 			hint: '- Space to select. Return to submit',
 			min: 1,
 			choices: [
-				{ title: 'On my local network', value: 'mdns' },
-				{ title: 'Using the global p2p network', value: 'dht' },
-				{ title: 'Using a set of nodes to bootstrap', value: 'bootstrap' },
-				{ title: 'Using the global network + a set of nodes to bootstrap', value: 'dht-bootstrap' },
+				{ title: 'On my local network', value: DiscoveryType.MDNS },
+				{ title: 'Using the global p2p network', value: DiscoveryType.DHT },
+				{ title: 'Using a set of nodes to bootstrap', value: DiscoveryType.BOOTSTRAP },
+				{ title: 'Using the global network + a set of nodes to bootstrap', value: DiscoveryType.DHT_BOOTSTRAP },
 			],
 		},
 		{ onCancel: () => process.exit(0) }
