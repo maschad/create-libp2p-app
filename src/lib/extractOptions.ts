@@ -26,10 +26,14 @@ export async function extractOptions() {
 		switch (environmentType) {
 			case EnvironmentType.BROWSER_TO_OTHER:
 				options.transports = ['webSockets', 'webRTC', 'circuitRelayTransport']
+				options.addresses.listen.push('/ip4/0.0.0.1/tcp/0/ws')
+				options.addresses.listen.push('/p2p-circuit')
+				options.addresses.listen.push('/webrtc')
 				break;
 
 			case EnvironmentType.NODE_TO_OTHER:
 				options.transports = ['tcp', 'circuitRelayTransport']
+				options.addresses.listen.push('/ip4/0.0.0.0/tcp')
 				options.services.push('dcutr')
 				break;
 
@@ -41,24 +45,31 @@ export async function extractOptions() {
 			case EnvironmentType.BROWSER_TO_BROWSER:
 				options.transports = ['webSockets', 'webRTC', 'circuitRelayTransport']
 				options.services.push('circuitRelayServer')
+				options.addresses.listen.push('/ip4/0.0.0.1/tcp/0/ws')
+				options.addresses.listen.push('/p2p-circuit')
+				options.addresses.listen.push('/webrtc')
 				break;
 		}
 	} else {
 		switch (environmentType) {
 			case 'browser-to-other':
 				options.transports = ['webtransport', 'webSockets']
+				options.addresses.listen.push('/ip4/0.0.0.1/tcp/0/ws')
 				break;
 
 			case 'node-to-other':
-				options.transports = ['tcp']
-				break;
-
 			case 'node-to-node':
 				options.transports = ['tcp']
+				options.addresses.listen.push('/ip4/0.0.0.0/tcp')
 				break;
+
+
 
 			case EnvironmentType.BROWSER_TO_BROWSER:
 				options.transports = ['webSockets', 'webRTC', 'circuitRelayTransport', 'webtransport']
+				options.addresses.listen.push('/ip4/0.0.0.1/tcp/0/ws')
+				options.addresses.listen.push('/p2p-circuit')
+				options.addresses.listen.push('/webrtc')
 				break;
 		}
 	}

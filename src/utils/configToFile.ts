@@ -23,12 +23,12 @@ export async function writeConfigToFile(config: any, outputPath: string) {
 	Object.values(config).forEach(value => {
 		if (Array.isArray(value)) {
 			value.forEach(item => {
-				if (importMap[item]) {
-					neededImports.add(`import { ${item.replace('()', '')} } from '${importMap[item]}'`)
+				if (importMap[item as keyof typeof importMap]) {
+					neededImports.add(`import { ${item.replace('()', '')} } from '${importMap[item as keyof typeof importMap]}'`)
 				}
 			})
-		} else if (typeof value === 'string' && importMap[value]) {
-			neededImports.add(`import { ${value.replace('()', '')} } from '${importMap[value]}'`)
+		} else if (typeof value === 'string' && importMap[value as keyof typeof importMap]) {
+			neededImports.add(`import { ${value.replace('()', '')} } from '${importMap[value as keyof typeof importMap]}'`)
 		}
 	})
 
