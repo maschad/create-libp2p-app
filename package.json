@@ -5,10 +5,11 @@
   "type": "module",
   "description": "A simple tool to scaffold libp2p dApps",
   "bin": {
-    "create-libp2p-app": "create-libp2p-app.js"
+    "create-libp2p-app": "./create-libp2p-app.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "create-libp2p-app.js"
   ],
   "scripts": {
     "type:check": "tsc --noEmit",
