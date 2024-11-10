@@ -7,8 +7,12 @@
   "bin": {
     "create-libp2p-app": "create-libp2p-app.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "esbuild src/bin.ts --outdir=dist --platform=node --format=esm",
+    "type:check": "tsc --noEmit",
+    "build": "tsup",
     "start": "tsx src/bin.ts"
   },
   "repository": {
@@ -30,13 +34,14 @@
     "@types/node": "^22.7.4",
     "@types/prompts": "^2.4.9",
     "esbuild": "0.24.0",
+    "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "dependencies": {
     "chalk": "^5.3.0",
-    "libp2p": "^2.2.1",
     "commander": "^12.1.0",
+    "libp2p": "^2.2.1",
     "ora": "^8.1.1",
     "prompts": "^2.4.2"
   }

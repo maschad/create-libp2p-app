@@ -1,23 +1,22 @@
 import chalk from 'chalk';
 import { execSync } from 'child_process';
 import type { Command } from 'commander';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { cp, mkdir, rename } from 'fs/promises';
+import { existsSync } from 'fs';
+import { cp, mkdir } from 'fs/promises';
 import ora from 'ora';
 import { join } from 'path';
 import { readFile, writeFile } from 'fs/promises';
-import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 import { error, log } from './utils/logger';
 import { promptForProjectName } from './prompts';
-import { getPackageVersion } from './lib/getPackageVersion';
 import { extractOptions } from './lib/extractOptions';
 import { writeConfigToFile } from './utils/configToFile';
+import { fileURLToPath } from 'url';
 
 export { setupProgram } from './lib/setupProgram';
 
-const __filename = new URL(import.meta.url).pathname;
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const runScaffoldCli = async ({
@@ -78,6 +77,9 @@ export const runScaffoldCli = async ({
 		...packageJson.dependencies,
 		...dependencies.reduce((acc, dep) => ({ ...acc, [dep as string]: "latest" }), {})
 	};
+
+	// Update package name in package.json
+	packageJson.name = projectPath.split('/').pop();
 
 	await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
