@@ -11,6 +11,13 @@
     "build": "esbuild src/bin.ts --outdir=dist --platform=node --format=esm",
     "start": "tsx src/bin.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maschad/create-libp2p-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maschad/create-libp2p-app/issues"
+  },
   "exports": {
     ".": {
       "import": "./dist/bin.js",
