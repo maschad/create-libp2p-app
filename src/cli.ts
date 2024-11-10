@@ -5,6 +5,9 @@ import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { cp, mkdir, rename } from 'fs/promises';
 import ora from 'ora';
 import { join } from 'path';
+import { readFile, writeFile } from 'fs/promises';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 import { error, log } from './utils/logger';
 import { promptForProjectName } from './prompts';
@@ -14,8 +17,8 @@ import { writeConfigToFile } from './utils/configToFile';
 
 export { setupProgram } from './lib/setupProgram';
 
-
-
+const __filename = new URL(import.meta.url).pathname;
+const __dirname = dirname(__filename);
 
 export const runScaffoldCli = async ({
 	program,
@@ -41,31 +44,53 @@ export const runScaffoldCli = async ({
 
 		projectPath = await promptForProjectName();
 	}
+
+	await mkdir(projectPath);
+
+	await cp(join(__dirname, 'template'), projectPath, { recursive: true });
+
+	const options = await extractOptions();
+
 	const fileCopySpinner = ora({
 		text: 'Creating template files..',
 		color: 'green',
 	}).start();
 
-	await mkdir(projectPath);
-
-	const options = await extractOptions();
-
 	const srcDir = join(projectPath, 'src');
-	await mkdir(srcDir);
 
 	const optionsFilePath = join(srcDir, 'libp2p.ts');
 
+	const imports = await writeConfigToFile(options, optionsFilePath);
 
-	await writeConfigToFile(options, optionsFilePath);
+	const packageJsonPath = join(projectPath, 'package.json');
+	const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf-8'));
 
-	// // Remove typegen files from gitignore
-	// const gitignorePath = join(projectPath, '.gitignore');
-	// const gitignoreContents = readFileSync(gitignorePath, 'utf-8');
-	// const newGitIgnoreContents = gitignoreContents.replace(/^(src\/sway-api\/.+)$/gm, '# $1');
-	// writeFileSync(gitignorePath, newGitIgnoreContents);
+	// Extract package names from imports string
+	const dependencies = imports.split('\n')
+		.map(line => {
+			const match = line.match(/from '([^']+)'/);
+			return match ? match[1] : null;
+		})
+		.filter(Boolean);
+
+	// Add dependencies to package.json
+	packageJson.dependencies = {
+		...packageJson.dependencies,
+		...dependencies.reduce((acc, dep) => ({ ...acc, [dep as string]: "latest" }), {})
+	};
+
+	await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 	fileCopySpinner.succeed('Created template files!');
 
+	const installSpinner = ora({
+		text: 'Installing dependencies..',
+		color: 'green',
+	}).start();
+
+	execSync('npm install', { cwd: projectPath });
+
+	installSpinner.succeed('Installed dependencies!');
 
 	log();
 	log();

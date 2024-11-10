@@ -60,4 +60,6 @@ export default libp2pConfig
 
 	// Write the file
 	await fs.writeFile(outputPath, moduleContent, 'utf-8')
+
+	return imports
 }
