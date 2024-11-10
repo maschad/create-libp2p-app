@@ -1,7 +1,7 @@
 {
   "name": "create-libp2p-app",
   "author": "Chad Nehemiah <chad.nehemiah94@gmail.com>",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "description": "A simple tool to scaffold libp2p dApps",
   "bin": {
@@ -9,8 +9,7 @@
   },
   "files": [
     "dist",
-    "create-libp2p-app.js",
-    "src/template"
+    "create-libp2p-app.js"
   ],
   "scripts": {
     "type:check": "tsc --noEmit",
@@ -36,6 +35,7 @@
     "@types/node": "^22.7.4",
     "@types/prompts": "^2.4.9",
     "esbuild": "0.24.0",
+    "fs-extra": "^11.2.0",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
