@@ -9,7 +9,8 @@
   },
   "files": [
     "dist",
-    "create-libp2p-app.js"
+    "create-libp2p-app.js",
+    "src/template"
   ],
   "scripts": {
     "type:check": "tsc --noEmit",
