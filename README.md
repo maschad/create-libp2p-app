@@ -1,3 +1,3 @@
-# create-libp2p-dapp
+# create-libp2p-app
 
-Create a libp2p dapp.
+Create a libp2p app.
