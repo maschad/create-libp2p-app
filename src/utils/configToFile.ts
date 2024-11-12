@@ -4,6 +4,7 @@ import path from 'path'
 export async function writeConfigToFile(config: any, outputPath: string) {
 	// Create the import statements dynamically based on config
 	const importMap = {
+		'tcp()': "@libp2p/tcp",
 		'webSockets()': "@libp2p/websockets",
 		'webRTC()': "@libp2p/webrtc",
 		'noise()': "@chainsafe/libp2p-noise",

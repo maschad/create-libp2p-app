@@ -33,7 +33,7 @@ export async function extractOptions() {
 
 			case EnvironmentType.NODE_TO_OTHER:
 				options.transports = ['tcp', 'circuitRelayTransport']
-				options.addresses.listen.push('/ip4/0.0.0.0/tcp')
+				options.addresses.listen.push('/ip4/0.0.0.0/tcp/0')
 				options.services.push('dcutr')
 				break;
 
@@ -60,7 +60,7 @@ export async function extractOptions() {
 			case 'node-to-other':
 			case 'node-to-node':
 				options.transports = ['tcp']
-				options.addresses.listen.push('/ip4/0.0.0.0/tcp')
+				options.addresses.listen.push('/ip4/0.0.0.0/tcp/0')
 				break;
 
 
