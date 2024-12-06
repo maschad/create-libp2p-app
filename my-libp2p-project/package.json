@@ -1,0 +1,28 @@
+{
+  "name": "my-libp2p-project",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start:listener": "tsx listener/src/listener.ts",
+    "start:dialer": "tsx dialer/src/dialer.ts"
+  },
+  "dependencies": {
+    "libp2p": "^2.3.1",
+    "it-length-prefixed": "^9.1.0",
+    "it-map": "^3.1.1",
+    "it-pipe": "^3.0.1",
+    "p-defer": "^4.0.1",
+    "uint8arrays": "^5.1.0",
+    "@multiformats/multiaddr": "^12.3.4",
+    "@libp2p/tcp": "latest",
+    "@libp2p/mdns": "latest",
+    "@libp2p/identify": "latest",
+    "@chainsafe/libp2p-noise": "latest",
+    "@chainsafe/libp2p-yamux": "latest"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "tsx": "^4.19.2",
+    "typescript": "~5.7.2"
+  }
+}

@@ -55,9 +55,9 @@ export const runScaffoldCli = async ({
 		color: 'green',
 	}).start();
 
-	const srcDir = join(projectPath, 'src');
+	const sharedDir = join(projectPath, 'shared');
 
-	const optionsFilePath = join(srcDir, 'libp2p.ts');
+	const optionsFilePath = join(sharedDir, 'libp2p.ts');
 
 	const imports = await writeConfigToFile(options, optionsFilePath);
 
@@ -66,7 +66,7 @@ export const runScaffoldCli = async ({
 
 	// Extract package names from imports string
 	const dependencies = imports.split('\n')
-		.map(line => {
+		.map((line: string) => {
 			const match = line.match(/from '([^']+)'/);
 			return match ? match[1] : null;
 		})
@@ -103,7 +103,8 @@ export const runScaffoldCli = async ({
 	log();
 	log(`- cd into the project directory: cd ${projectPath}`);
 	log();
-	log('- Run `npm run start` to start the app');
+	log('- Run `npm run start:listener` to start the listener');
+	log('- Then in another terminal, `npm run start:dialer` to start the dialer');
 	log();
 	log();
 	log('-> For more info on getting started: https://github.com/libp2p/js-libp2p/blob/main/doc/GETTING_STARTED.md');
