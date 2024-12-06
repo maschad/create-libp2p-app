@@ -1,7 +1,7 @@
 {
   "name": "create-libp2p-app",
   "author": "Chad Nehemiah <chad.nehemiah94@gmail.com>",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "type": "module",
   "description": "A simple tool to scaffold libp2p dApps",
   "bin": {
