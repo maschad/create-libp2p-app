@@ -32,18 +32,18 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/node": "^22.7.4",
+    "@types/node": "^22.10.1",
     "@types/prompts": "^2.4.9",
     "esbuild": "0.24.0",
     "fs-extra": "^11.2.0",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "typescript": "~5.7.2"
   },
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
-    "libp2p": "^2.2.1",
+    "libp2p": "^2.3.1",
     "ora": "^8.1.1",
     "prompts": "^2.4.2"
   }
